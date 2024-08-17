@@ -22,10 +22,10 @@ export default function App() {
   let isRoleExist = false
   if (cookie) {
     const cookieData : IcookieData = JSON.parse(cookie)
-    isRoleExist = cookieData.role === undefined ? false : true
+    isRoleExist = cookieData.role === null ? false : true
   }
   useEffect(() => {
-    if (!isRoleExist) {
+    if (!isRoleExist && cookie) {
       navigate('/onboard')
     }
   }, [])

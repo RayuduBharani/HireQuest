@@ -8,11 +8,14 @@ import { useEffect } from "react";
 
 export default function Onboard() {
     const navigate = useNavigate();
-
-    const cookie = Cookies.get('bharani') || null;
-    const userData: IcookieData | null = cookie ? JSON.parse(cookie) : null;
+    let isRole = false
+    const cookie = Cookies.get('bharani')
+    if (cookie) {
+        const cookieData : IcookieData = JSON.parse(cookie)
+        isRole = cookieData.role === null ? false : true
+    }
     useEffect(() => {
-        if (userData?.role) {
+        if (isRole) {
             toast({title : 'You are already Onboarded.'})
             navigate('/home')
         }
