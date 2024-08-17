@@ -16,6 +16,7 @@ interface IcookieData {
     useremail: string;
     userimage: string;
     username: string;
+    role? : string;
 }
 
 interface MyContextType {
@@ -112,4 +113,16 @@ interface IRoleInfoData {
 
 interface IuserType {
     userType : string
+}
+
+interface IUserData {
+    username: string;
+    useremail: string;
+    userpassword: string;
+    userimage?: string;
+    role?: 'candidate' | 'recruiter' | null;
+    profile?: string | null;
+    roleProfile?: 'Candidate' | 'Recruiter' | null;
+    createdAt: Date;
+    updatedAt: Date;
 }

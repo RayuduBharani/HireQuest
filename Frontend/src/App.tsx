@@ -3,7 +3,7 @@ import SignInPage from "./Pages/SignInPage";
 import SignUpPage from "./Pages/SignUpPage";
 import HomePage from "./Pages/RoleBasedPages/HomePage";
 import NavBar from "./components/NavBar";
-import ProtectedRoute from "./Pages/PrivateComponent";
+// import ProtectedRoute from "./Pages/PrivateComponent";
 import JobPage from "./Pages/RoleBasedPages/JobPage";
 import Companies from "./Pages/Companies";
 import Activity from "./Pages/Activity";
@@ -18,7 +18,7 @@ export default function App() {
   return (
     <div>
       {showNavBar ? null : <NavBar />}
-        <Routes>
+        {/* <Routes>
           <Route path="/sign-in" element={<ProtectedRoute Component={SignInPage} protectedRoutes={false} />} />
           <Route path="/sign-up" element={<ProtectedRoute Component={SignUpPage} protectedRoutes={false} />} />
           <Route path="/home" element={<ProtectedRoute Component={HomePage} protectedRoutes={true} />} />
@@ -28,6 +28,18 @@ export default function App() {
           <Route path="/feed" element={<ProtectedRoute Component={FeedPage} protectedRoutes={true} />} />
           <Route path="/account" element={<ProtectedRoute Component={AccountPage} protectedRoutes={true} />} />
           <Route path="/onboard" element={<ProtectedRoute Component={Onboard} protectedRoutes={true} />} />
+          <Route path="*" element={<Navigate to="/sign-in" />} />
+        </Routes> */}
+        <Routes>
+          <Route path="/sign-in" element={<SignInPage />} />
+          <Route path="/sign-up" element = {<SignUpPage />} />
+          <Route path="/home" element = {<HomePage />} />
+          <Route path="/jobs" element={<JobPage />} />
+          <Route path="/companies" element = {<Companies />} />
+          <Route path="/activity" element = {<Activity />} />
+          <Route path="/feed" element = {<FeedPage />} />
+          <Route path="/account" element = {<AccountPage />} />
+          <Route path="/onboard" element = {<Onboard />} />
           <Route path="*" element={<Navigate to="/sign-in" />} />
         </Routes>
     </div>

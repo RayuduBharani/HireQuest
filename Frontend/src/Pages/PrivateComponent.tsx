@@ -1,8 +1,15 @@
-import { Navigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
+import { useEffect } from "react";
+
+interface IProps {
+    Component: React.ComponentType;
+    protectedRoutes: boolean;
+}
+
 
 export default function ProtectedRoute({ Component, protectedRoutes }: IProps) {
-    // Retrieve and parse cookie data
+    const navigate = useNavigate();
     const cookie = Cookies.get('bharani');
     let UserData: IcookieData | null = null;
 
@@ -10,28 +17,21 @@ export default function ProtectedRoute({ Component, protectedRoutes }: IProps) {
         UserData = JSON.parse(cookie);
     }
 
-
     const roleInfoCookie = Cookies.get('JobRole');
     const roleInfo: IRoleInfoData | null = roleInfoCookie ? JSON.parse(roleInfoCookie) : null;
-    console.log(roleInfo);
-    console.log(cookie)
-    
-    if (!protectedRoutes && UserData && roleInfo) {
-        return <Navigate to="/home" />;
-    }
 
-    if(protectedRoutes){
-        if (!UserData && !roleInfo) {
-            return <Navigate to="/sign-in" />;
+    useEffect(() => {
+        if (!protectedRoutes && UserData && roleInfo) {
+            navigate('/home');
+        } else if (protectedRoutes) {
+            if (!UserData && !roleInfo) {
+                navigate('/sign-in');
+            } else if (!roleInfoCookie && UserData) {
+                navigate('/onboard');
+            }
         }
-    }
+    }, [navigate, UserData, roleInfo, roleInfoCookie, protectedRoutes]);
 
-    if (!roleInfoCookie && UserData && protectedRoutes) {
-        return <Navigate to="/onboard" />;
-    }
-
-    
-
+    // If navigating, don't render the component
     return <Component />;
 }
-

@@ -37,11 +37,15 @@ export default function SignInPage() {
           title: 'Login success'
         })
         setLoading(false)
-        navigate('/onboard')
         setSignInData({
           useremail: '',
           userpassword: ''
         })
+        if (data.role) {
+          navigate('/home')
+        } else {
+          navigate('/onboard')
+        }
       }
       else if (data.message == 'Incorrect Password') {
         toast({
