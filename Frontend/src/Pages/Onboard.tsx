@@ -4,18 +4,19 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { toast } from "@/components/ui/use-toast";
 import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
+import { useEffect } from "react";
 
 export default function Onboard() {
     const navigate = useNavigate();
 
     const cookie = Cookies.get('bharani') || null;
-
     const userData: IcookieData | null = cookie ? JSON.parse(cookie) : null;
-
-    if (userData?.role) {
-        toast({title : 'You are already Onboarded.'})
-        navigate('/home')
-    }
+    useEffect(() => {
+        if (userData?.role) {
+            toast({title : 'You are already Onboarded.'})
+            navigate('/home')
+        }
+    }, [])
 
     return (
         <div className="w-full h-screen flex justify-center items-center">
