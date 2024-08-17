@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes, useLocation } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import SignInPage from "./Pages/SignInPage";
 import SignUpPage from "./Pages/SignUpPage";
 import HomePage from "./Pages/RoleBasedPages/HomePage";
@@ -10,10 +10,25 @@ import Activity from "./Pages/Activity";
 import FeedPage from "./Pages/RoleBasedPages/FeedPage";
 import AccountPage from "./Pages/RoleBasedPages/AccountPage";
 import Onboard from "./Pages/Onboard";
+import Cookies from "js-cookie";
+import { useEffect } from "react";
 
 export default function App() {
   const location = useLocation();
   const showNavBar = location.pathname === '/onboard';
+  const cookie = Cookies.get('bharani')
+  const navigate = useNavigate()
+
+  let isRoleExist = false
+  if (cookie) {
+    const cookieData : IcookieData = JSON.parse(cookie)
+    isRoleExist = cookieData.role === undefined ? false : true
+  }
+  useEffect(() => {
+    if (!isRoleExist) {
+      navigate('/onboard')
+    }
+  }, [])
 
   return (
     <div>
