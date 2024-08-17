@@ -6,12 +6,8 @@ export default function NavBar() {
     const location = useLocation();
     const isPublicPage = location.pathname === '/sign-up' || location.pathname === '/sign-in';
 
-
-    const roleInfoCookie = Cookies.get('JobRole');
-    const roleInfo: IRoleInfoData | null = roleInfoCookie ? JSON.parse(roleInfoCookie) : null;
-    const isCandidate = !isPublicPage && roleInfo?.data.userType != "recruiter"
-    
-    
+    const role = JSON.parse(Cookies.get('bharani') || '')
+    const isCandidate = role === 'candidate' ? true : false    
 
     return (
         <div className="w-full h-[75px] flex justify-around pr-[35px]">
