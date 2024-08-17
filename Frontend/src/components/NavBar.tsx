@@ -6,8 +6,13 @@ export default function NavBar() {
     const location = useLocation();
     const isPublicPage = location.pathname === '/sign-up' || location.pathname === '/sign-in';
 
-    const role = JSON.parse(Cookies.get('bharani') || '')
-    const isCandidate = role === 'candidate' ? true : false    
+    let isCandidate = false
+    const cookie = Cookies.get('bharani')
+    if (cookie) {
+        const cookieData: IcookieData = JSON.parse(cookie);
+        const role = cookieData.role;
+        isCandidate = role === 'candidate';
+    }
 
     return (
         <div className="w-full h-[75px] flex justify-around pr-[35px]">

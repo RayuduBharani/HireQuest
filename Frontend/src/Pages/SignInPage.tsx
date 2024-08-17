@@ -4,11 +4,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "@/components/ui/use-toast";
 import { ChangeEvent, FormEvent, useState } from "react";
-import { Link, NavigateFunction, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
 
 export default function SignInPage() {
-  const navigate: NavigateFunction = useNavigate()
+  const navigate = useNavigate()
 
   const [signInData, setSignInData] = useState<IsignInData>({ useremail: '', userpassword: '' })
   const [Loading, setLoading] = useState<boolean>(false)
