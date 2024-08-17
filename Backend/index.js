@@ -118,6 +118,7 @@ app.post("/google", async (req, res) => {
           useremail: existingUser.useremail,
           username: existingUser.username,
           userimage: existingUser.userimage,
+          role : existingUser.role,
         },
         "JOBPORTEL",
         { expiresIn: "168h" }
@@ -130,6 +131,7 @@ app.post("/google", async (req, res) => {
         useremail: decoded.useremail,
         username: decoded.username,
         userimage: decoded.userimage,
+        role : decoded.role,
       });
     } else {
       const generatePass =
@@ -178,6 +180,30 @@ app.post("/google", async (req, res) => {
 
 // onboard
 
+app.post('/onboard-candidate', VerifyToken, async (req, res) => {
+  connectDatabase()
+  try {
+    const newCandidate = new Candidate(req.body)
+    const token = req.headers.authorization.split(' ')[1]
+    const userData = jwt.decode(token)
+    const user = await User.findById(userData.userId)
+    if (!user.role) {
+      const result = await User.findByIdAndUpdate(userData.userId, {
+        $set: { role: "candidate" },
+      });
+      await newCandidate.save();
+      result.role = 'candidate'
+      res
+        .status(201)
+        .json({success: true, message: "You Are Onboared as a Candidate.",result});
+    } else {
+        res.status(200).json({success : false, message : "You Are Already Onboarded as a Candidate."})
+    }
+  } catch (err) {
+    res.status(500).json({success : false, message : err.message})
+  }
+})
+
 app.post("/onboard-recruiter", VerifyToken, async (req, res) => {
   connectDatabase();
   try {
@@ -201,26 +227,6 @@ app.post("/onboard-recruiter", VerifyToken, async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 });
-
-app.post("/onboard", VerifyToken, async (req, res) => {
-  connectDatabase();
-  console.log(req.body);
-  try {
-    const userData = await onboardModel.create(req.body);
-    console.log(userData);
-
-    if (userData) {
-      res.send({ success: true, message: "you are onboarded" });
-    } else {
-      console.log(userData);
-    }
-  } catch (err) {
-    res.send(err);
-    res.send({ message: "some err happened in the onboard page" });
-  }
-});
-
-// Check if the user recruiter or candidate
 
 
 app.listen(8000, () => {
