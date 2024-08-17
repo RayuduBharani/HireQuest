@@ -1,11 +1,13 @@
 const express = require('express');
 const cors = require('cors');
 const connectDatabase = require('./utils/DB');
-const userModel = require('./utils/Schema/userModel');
-const bcrypt = require('bcryptjs');
+const User = require('./utils/Schema/userSchema')
+const Recruiter = require('./utils/Schema/recruiterSchema')
+const Candidate = require('./utils/Schema/candidateSchema')
+const Job = require('./utils/Schema/jobSchema')
+const VerifyToken = require('./utils/MiddleWares/decoded')
+const bcrypt = require('bcryptjs'); 
 const jwt = require('jsonwebtoken');
-const onboardModel = require('./utils/Schema/onboardModel');
-const VerifyToken = require('./utils/MiddleWares/decoded');
 
 const app = express()
 app.use(cors())
@@ -16,7 +18,7 @@ app.use(express.json())
 app.post('/sign-up', async (req, res) => {
     connectDatabase();
     try {
-        const existedUser = await userModel.findOne({ useremail: req.body.useremail });
+        const existedUser = await User.findOne({ useremail: req.body.useremail });
         console.log(existedUser);
 
         if (existedUser) {
@@ -25,15 +27,14 @@ app.post('/sign-up', async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hash = await bcrypt.hash(req.body.userpassword, salt);
 
-        const newRegisterData = {
+        const newUser = new User({
             username: req.body.username,
             useremail: req.body.useremail,
             userpassword: hash,
             userimage: req.body.userimage
-        };
-
-        await userModel.create(newRegisterData);
-        res.send({ success: true, message: "Registration successful" });
+        })
+        await newUser.save()
+        res.send({ success: true, message: "Registration successful", newUser });
 
     } catch (err) {
         console.log(err);
@@ -46,7 +47,7 @@ app.post('/sign-up', async (req, res) => {
 app.post("/sign-in", async (req, res) => {
     connectDatabase()
     try {
-        const loginData = await userModel.findOne({ useremail: req.body.useremail })
+        const loginData = await User.findOne({ useremail: req.body.useremail })
 
         if (loginData) {
             bcrypt.compare(req.body.userpassword, loginData.userpassword, function (err, result) {
@@ -84,7 +85,7 @@ app.post("/sign-in", async (req, res) => {
 app.post('/google', async (req, res) => {
     connectDatabase()
     try {
-        const existingUser = await userModel.findOne({ useremail: req.body.useremail });
+        const existingUser = await User.findOne({ useremail: req.body.useremail });
         console.log(existingUser);
 
         if (existingUser) {
@@ -103,7 +104,7 @@ app.post('/google', async (req, res) => {
                 userimage: req.body.userimage
             }
 
-            const createdUser = await userModel.create(newUser);
+            const createdUser = await User.create(newUser);
             const token = jwt.sign({ id: createdUser._id, useremail: createdUser.useremail, username: createdUser.username, userimage: createdUser.userimage }, 'JOBPORTEL', { expiresIn: '1h' });
 
             if (createdUser) {
@@ -154,5 +155,5 @@ app.get("/GetTheRoleInfo/:email", async (req, res) => {
 })
 
 app.listen(8000, () => {
-    console.log("server running");
+    console.log("Server is running on http://localhost:8000");
 })

@@ -62,7 +62,7 @@ export default function SignUpPage() {
   }
 
   function isFormValid() {
-    return signUpData.username !== '' && signUpData.useremail !== '' && signUpData.userpassword !== '';
+    return signUpData.username !== '' && signUpData.useremail !== '' && signUpData.userpassword !== '' && signUpData.userpassword.length >= 8;
   }
 
   return (
@@ -84,11 +84,11 @@ export default function SignUpPage() {
 
         <div className="flex flex-col gap-3 mt-5">
           <Label htmlFor="Password">Password</Label>
-          <Input onChange={handleEvent} value={signUpData.userpassword} id="Password" type="password" name="userpassword" />
+          <Input onChange={handleEvent} minLength={8} value={signUpData.userpassword} id="Password" type="password" name="userpassword" />
         </div>
 
         <Button disabled={loading || !isFormValid()} className="mt-7">{loading ? "Loading ..." : "Register"}</Button>
-        <p className="text-sm mt-5">Already have an accout ? <Link to={'/sign-in'} className="text-primary font-medium">SignIn</Link></p>
+        <p className="text-sm mt-5">Already have an Account ? <Link to={'/sign-in'} className="text-primary font-medium">SignIn</Link></p>
       </form>
     </div>
   )
