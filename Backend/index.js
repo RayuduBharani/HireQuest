@@ -17,35 +17,62 @@ app.use(express.json());
 
 app.post("/sign-up", async (req, res) => {
   connectDatabase();
+  
   try {
-    const existedUser = await User.findOne({ useremail: req.body.useremail });
-    console.log(existedUser);
+      const { username, useremail, userpassword, userimage } = req.body;
+    
+    if (!useremail || !userpassword || !username) {
+      return res.status(400).send({
+        success: false,
+        message: "Email, username, and password are required fields."
+      });
+    }
+    
+    const existedUser = await User.findOne({ useremail });
 
     if (existedUser) {
-      return res.send({ success: false, message: "User Already exists" });
+      return res.status(409).send({ 
+        success: false, 
+        message: "User already exists with this email." 
+      });
     }
+
     const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash(req.body.userpassword, salt);
+    const hash = await bcrypt.hash(userpassword, salt);
 
     const newUser = new User({
-      username: req.body.username,
-      useremail: req.body.useremail,
+      username,
+      useremail,
       userpassword: hash,
-      userimage: req.body.userimage,
+      userimage,
     });
+
     await newUser.save();
-    res.send({ success: true, message: "Registration successful", newUser });
+
+    res.status(201).send({ 
+      success: true, 
+      message: "Registration successful", 
+      newUser 
+    });
+    
   } catch (err) {
-    console.log(err);
-    res
-      .status(500)
-      .send({
+    console.error(err);
+
+    if (err.code === 11000) {
+      return res.status(409).send({
         success: false,
-        message: "Some error happened in the registration",
-        err: err,
+        message: "Duplicate key error: A user with this email already exists."
       });
+    }
+
+    res.status(500).send({
+      success: false,
+      message: "Some error happened in the registration",
+      err,
+    });
   }
 });
+
 
 // login
 

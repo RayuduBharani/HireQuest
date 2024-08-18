@@ -18,8 +18,6 @@ export default function Onboard() {
         if (isRole) {
             toast({title : 'You are already Onboarded.'})
             navigate('/home')
-        } else {
-            navigate('/sign-in')
         }
     }, [])
 
